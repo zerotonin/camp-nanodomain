@@ -31,8 +31,9 @@
 
 # --- Paths (edit these) ---
 PROJECT_DIR="/projects/sciences/zoology/geurten_lab/cAMP_model"
-DATA_FILE="${PROJECT_DIR}/all_camp_long.csv"
-SCRIPT="${PROJECT_DIR}/optimise_model_gpu_v2.py"
+CODE_DIR="/home/geuba03p/PyProjects/camp-nanodomain"
+DATA_FILE="${CODE_DIR}/all_camp_long.csv"
+SCRIPT="${CODE_DIR}/optimise_model_gpu_v2.py"
 OUTDIR="${PROJECT_DIR}/results_v2_${SLURM_JOB_ID}"
 
 # --- Activate environment ---
