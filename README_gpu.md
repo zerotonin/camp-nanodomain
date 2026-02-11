@@ -35,6 +35,13 @@ python optimise_model_gpu.py --data all_camp_long.csv --cpu
 
 # CPU-only version (no JAX needed, uses scipy)
 python optimise_model.py --data all_camp_long.csv --outdir results_cpu/
+
+
+python optimise_model_gpu_v2.py --data all_camp_long.csv --outdir results_v2/ --quick
+python optimise_model_gpu_v2.py --data all_camp_long.csv --outdir results_v2/   # full run
+
+# Plot from results (CPU, no JAX needed)
+python plot_figure2.py --data all_camp_long.csv --params results_v2/best_params.json --t-range="-10,80"
 ```
 
 ## What Gets GPU-Accelerated
