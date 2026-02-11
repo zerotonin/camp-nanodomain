@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-task=1
-#SBATCH --time=02:00:00
+#SBATCH --time=03:30:00
 #SBATCH --mem=16GB
 #SBATCH --output=camp_optim_%j.log
 #SBATCH --error=camp_optim_%j.err
