@@ -1,0 +1,42 @@
+name: camp-nanodomain
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  # --- Core scientific Python ---
+  - python=3.11
+  - numpy>=1.26
+  - scipy>=1.12
+  - pandas>=2.1
+  - matplotlib>=3.8
+
+  # --- For the CPU-only version (optimise_model.py) ---
+  # scipy already covers differential_evolution + solve_ivp
+
+  # --- CUDA toolkit (matches your driver CUDA 12.5) ---
+  - cuda-nvcc=12.4       # closest stable conda-forge build for 12.5 driver
+  - cuda-cudart=12.4
+
+  # --- pip packages (JAX GPU + diffrax for GPU solver) ---
+  - pip
+  - pip:
+      # JAX with CUDA 12 support
+      - "jax[cuda12]==0.4.35"
+
+      # Diffrax: JAX-native ODE/SDE solvers (GPU-accelerated)
+      - "diffrax>=0.6.0"
+
+      # Optax: gradient-based optimisers (for optional gradient refinement)
+      - "optax>=0.2.2"
+
+      # Evosax: GPU-accelerated evolutionary strategies in JAX
+      - "evosax>=0.1.6"
+
+      # Equinox: neural-net-style modules for JAX (diffrax dependency)
+      - "equinox>=0.11"
+
+  # --- Utilities ---
+  - tqdm
+  - ipython
+  - jupyter          # optional, for interactive exploration
