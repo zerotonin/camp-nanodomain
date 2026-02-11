@@ -76,14 +76,15 @@ def run_cpu_model(params, pairing_onsets, is_dunce, t_eval):
 
     Uses scipy.integrate.solve_ivp. Includes sensor filter.
     """
-    # Geometry
+    # Geometry — realistic Drosophila MB γ-lobe dimensions
+    # Aso et al. 2014, Scheffer et al. 2020: γ-lobe ~100-125 μm total
     n_comp = 5
-    d_b, d_a = 1.5, 0.3
-    inter_b = 5.0
-    n_ax = 20
+    d_b, d_a = 2.0, 0.3          # bouton and axon diameter (μm)
+    inter_comp = 25.0             # center-to-center between compartments (μm)
+    n_ax = 40                     # spatial bins per axon segment
     A_b = np.pi * (d_b/2)**2
     A_a = np.pi * (d_a/2)**2
-    ax_len = inter_b - d_b
+    ax_len = inter_comp - d_b
     ax_dx = ax_len / n_ax
 
     # Build grid

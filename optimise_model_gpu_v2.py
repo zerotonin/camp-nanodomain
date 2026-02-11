@@ -57,12 +57,33 @@ BOUTON = 0
 AXON = 1
 
 
-def build_geometry(n_comp=5, d_bouton=1.5, d_axon=0.3,
-                   inter_bouton=5.0, axon_bins=20):
-    """Build 1D spatial grid. Returns dict of JAX arrays."""
+def build_geometry(n_comp=5, d_bouton=2.0, d_axon=0.3,
+                   inter_comp=25.0, axon_bins=40):
+    """Build 1D spatial grid for a single KC axon through the γ-lobe.
+
+    Realistic Drosophila mushroom body γ-lobe dimensions:
+      - γ-lobe total length: ~100-125 μm (Aso et al. 2014, Scheffer et al. 2020)
+      - Each compartment (γ1-γ5): ~20-25 μm
+      - KC axon diameter: ~0.2-0.5 μm
+      - Boutons: ~1-2 μm diameter, 3-8 per compartment per KC
+
+    Each model "bouton" node represents the average signal within one
+    compartment. The axon segments are the stretches between compartment
+    centers (~25 μm apart, not 5 μm as in v1/v2).
+
+    Args:
+        n_comp: number of compartments (γ1-γ5)
+        d_bouton: effective bouton/source diameter (μm)
+        d_axon: axon diameter between compartments (μm)
+        inter_comp: center-to-center distance between compartments (μm)
+        axon_bins: spatial bins per axon segment (more = better resolution)
+
+    Returns:
+        dict of JAX arrays with grid geometry.
+    """
     A_b = np.pi * (d_bouton / 2) ** 2
     A_a = np.pi * (d_axon / 2) ** 2
-    axon_len = inter_bouton - d_bouton
+    axon_len = inter_comp - d_bouton
     ax_dx = axon_len / axon_bins
 
     positions, dx_arr, areas, types, comp_ids = [], [], [], [], []
