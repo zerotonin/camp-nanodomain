@@ -207,7 +207,7 @@ def plot_figure2(data, params_dict=None, pairing_onsets=None,
     # Run model if params provided
     model_traces = {}
     if params_dict is not None and pairing_onsets is not None:
-        t_model = np.arange(max(t_lo, -5), 180, 0.25)
+        t_model = np.arange(max(t_lo, -10), min(t_hi + 5, 85), 0.25)
         for geno, is_d in [('dnc-wt', False), ('dnc-KD', True)]:
             print(f"  Running {geno} model...")
             t_m, pred = run_cpu_model(params_dict, pairing_onsets, is_d, t_model)

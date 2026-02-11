@@ -516,7 +516,9 @@ def load_data(csv_path: str) -> Dict:
     return data
 
 
-def prepare_data_arrays(data: Dict, dt_ds: float = 2.0):
+def prepare_data_arrays(data: Dict, dt_ds: float = 2.0,
+                        t_fit_lo: float = -5.0, t_fit_hi: float = 80.0):
+    """Prepare padded JAX arrays. Only data within [t_fit_lo, t_fit_hi] is used."""
     comps = ['g1', 'g2', 'g3', 'g4', 'g5']
 
     def process_geno(geno):
@@ -525,7 +527,7 @@ def prepare_data_arrays(data: Dict, dt_ds: float = 2.0):
             key = (geno, comp)
             if key in data:
                 t, m, s = data[key]
-                mask = t >= 0
+                mask = (t >= t_fit_lo) & (t <= t_fit_hi)
                 t, m, s = t[mask], m[mask], s[mask]
                 t_bins = np.arange(t.min(), t.max(), dt_ds)
                 m_ds = np.array([m[(t >= tb) & (t < tb + dt_ds)].mean() for tb in t_bins])
@@ -593,7 +595,7 @@ def plot_figure2_style(params_array, data_full, pairing_onsets, geom,
       - Triangle markers at stimulus times
     """
     t_lo, t_hi = t_display
-    t_model = np.arange(-5.0, 180.0, 0.25)
+    t_model = np.arange(-5.0, 82.0, 0.25)
     comps = ['g1', 'g2', 'g3', 'g4', 'g5']
 
     # Run both genotypes
@@ -702,7 +704,7 @@ def plot_figure2_style(params_array, data_full, pairing_onsets, geom,
 def plot_diagnostic(params_array, data_full, pairing_onsets, geom,
                     save_dir='.', tag=''):
     """Multi-panel diagnostic: all compartments + RMSE + convergence-ready."""
-    t_model = np.arange(0, 180, 0.5)
+    t_model = np.arange(-5.0, 82.0, 0.5)
     comps = ['g1', 'g2', 'g3', 'g4', 'g5']
 
     fig = plt.figure(figsize=(16, 10))
@@ -721,7 +723,7 @@ def plot_diagnostic(params_array, data_full, pairing_onsets, geom,
             key = (geno, comp)
             if key in data_full:
                 td, md, sd = data_full[key]
-                mask = td >= 0
+                mask = (td >= -5) & (td <= 80)
                 ax.fill_between(td[mask], md[mask]-sd[mask], md[mask]+sd[mask],
                                 alpha=0.15, color=color)
                 ax.plot(td[mask], md[mask], '-', color=color, alpha=0.5, linewidth=0.8)
@@ -729,7 +731,7 @@ def plot_diagnostic(params_array, data_full, pairing_onsets, geom,
         ax.set_title(title, fontsize=12)
         ax.set_ylabel('ΔF/F₀')
         ax.legend(fontsize=7, ncol=3, loc='upper right')
-        ax.set_xlim(0, 180)
+        ax.set_xlim(-5, 80)
         for o in pairing_onsets:
             ax.axvline(o, color='red', alpha=0.1, linewidth=0.5)
 
@@ -745,7 +747,7 @@ def plot_diagnostic(params_array, data_full, pairing_onsets, geom,
                 rmses.append(0)
                 continue
             td, md, _ = data_full[key]
-            mask = td >= 0
+            mask = (td >= -5) & (td <= 80)
             ci = COMP_MAP[comp]
             is_d = 1.0 if geno == 'dnc-KD' else 0.0
             t_m, pred = run_model_np(params_array, pairing_onsets, is_d, t_model, geom)
@@ -840,7 +842,7 @@ def main():
     # Prepare data
     t_wt, t_kd, m_wt, m_kd, s_wt, s_kd = prepare_data_arrays(
         data_full, dt_ds=args.downsample_dt)
-    t_save = jnp.arange(0.0, 180.0, 1.0)
+    t_save = jnp.arange(-5.0, 82.0, 1.0)   # match experimental window
     pairing_j = jnp.array(pairing_onsets)
 
     # Build vmapped cost
