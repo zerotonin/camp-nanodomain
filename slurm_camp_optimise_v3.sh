@@ -1,7 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=camp_v3
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:H100:1
+#SBATCH --account=geuba03p
+#SBATCH --partition=aoraki_gpu_H100,aoraki_gpu,aoraki_gpu_L40
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --gpus-per-task=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=04:00:00
