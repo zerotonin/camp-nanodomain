@@ -5,10 +5,13 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-task=1
-#SBATCH --time=04:00:00
+#SBATCH --time=08:00:00
 #SBATCH --mem=16GB
 #SBATCH --output=camp_optim_v5_%j.log
 #SBATCH --error=camp_optim_v5_%j.err
+
+# Force unbuffered Python output so progress appears in the log in real time
+export PYTHONUNBUFFERED=1
 
 # ============================================================
 # cAMP Nanodomain Model v5 — RBA Ca²⁺ + Free K_Ca
